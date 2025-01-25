@@ -1,0 +1,74 @@
+##ESSE DOCKERFILE FOI O DO DNS MENSO ATUALIZADO:
+
+
+
+# Usar a imagem base do Ubuntu
+FROM ubuntu:latest
+
+# Atualizar o repositório e instalar pacotes necessários
+RUN apt-get update && apt-get install -y \
+    openssh-server \
+    sudo \
+    curl
+
+# Criar um diretório necessário para o SSH
+RUN mkdir /var/run/sshd
+
+# Criar um usuário (substitua "usuario" por um nome de sua escolha)
+RUN useradd -m -s /bin/bash usuario
+
+# Definir uma senha para o usuário (substitua "senha123" por uma senha segura)
+RUN echo 'DNS:senha123' | chpasswd
+
+# Adicionar o usuário ao grupo sudo (para que ele tenha permissões elevadas, se necessário)
+RUN usermod -aG sudo usuario
+
+# Configurar o SSH: permitir autenticação por senha e desabilitar o login do root
+RUN sed -i 's/PermitRootLogin yes/PermitRootLogin no/' /etc/ssh/sshd_config
+RUN sed -i 's/PasswordAuthentication no/PasswordAuthentication yes/' /etc/ssh/sshd_config
+
+# Garantir que a chave SSH do usuário seja criada
+RUN mkdir -p /home/usuario/.ssh && chown -R usuario:usuario /home/usuario/.ssh
+
+# Expor a porta 22 para acesso SSH
+EXPOSE 22
+
+# Iniciar o SSH
+CMD service ssh start && tail -f /dev/null
+
+
+
+
+
+#EXECUTAR COMANDOS:
+docker build -t dns-with-ssh .
+docker run -d --name dns-ssh -p 53:53/udp -p 53:53/tcp -p 2222:22 dns-with-ssh
+ssh DNS@localhost -p 2222  
+
+
+##NO COMPOSE .YAML:
+version: '3.8'
+
+services:
+  dns:
+    build:
+      context: ./dns
+      dockerfile: Dockerfile
+    container_name: dns
+    ports:
+      - "53:53/udp"  # Porta do DNS
+      - "2222:22"    # Mapeia a porta 2222 do host para a porta 22 do contêiner (SSH)
+    environment:
+      - PASSWORD_AUTH=yes  # Variável para controle de autenticação por senha (se necessário)
+    volumes:
+      - ./ssh_config:/etc/ssh/sshd_config  # Se você tiver uma configuração personalizada para o SSH
+    command: /usr/sbin/sshd -D  # Comando para iniciar o SSH no contêiner
+
+
+  
+ 
+
+
+
+
+
