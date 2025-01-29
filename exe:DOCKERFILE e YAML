@@ -67,7 +67,8 @@ services:
 
 
 ----------------------------------------//--------------------------------------------------------------------------
-PARA O VOLUME, PODEMOS USAR ALGO ASSIM, (OBS: NAO ESTA FUNCIONADO)
+PARA O VOLUME, PODEMOS USAR ALGO ASSIM
+
 
   email:  # Definindo o serviço 'email'
     build:
@@ -94,8 +95,6 @@ volumes:
   emailvol:  # Definindo o volume persistente 'emailvol'
   email_data:  # Definindo o volume persistente 'email_data' para armazenar as mensagens
 
-
- 
 
 
 
