@@ -69,21 +69,32 @@ services:
 ----------------------------------------//--------------------------------------------------------------------------
 PARA O VOLUME, PODEMOS USAR ALGO ASSIM, (OBS: NAO ESTA FUNCIONADO)
 
-  email:
+  email:  # Definindo o serviço 'email'
     build:
-      context: ./email
-      dockerfile: Dockerfile
-    container_name: email
+      context: ./email  # Caminho para o Dockerfile
+      dockerfile: Dockerfile  # Nome do arquivo Dockerfile
+    container_name: email  # Nome do container
     ports:
       - "25:25/tcp"  # SMTP
       - "110:110/tcp"  # POP3
-      - "587:587/tcp"  # SMTP (comunicação com cliente)
+      - "587:587/tcp"  # SMTP com cliente
       - "143:143/tcp"  # IMAP
     volumes:
-      - emailvol:/etc/mail  # Mapeia o volume nomeado 'emailvol' para o diretório /etc/mail no container
-      - ./email:/etc/mail  # Mapeia o diretório local ./email para /etc/mail no container (onde seus arquivos de configuração estão)
+      - emailvol:/etc/mail  # Mapeando o volume 'emailvol' para o diretório /etc/mail no container
+      - ./email:/etc/mail  # Mapeando o diretório local './email' para /etc/mail no container
+      - email_data:/var/spool/mail  # Mapeando o volume 'email_data' para o diretório /var/spool/mail (para persistir mensagens)
     networks:
-      - asa-network
+      - asa-network  # Definindo a rede 'asa-network'
+
+networks:
+  asa-network:
+    driver: bridge  # Tipo de rede usada (bridge é padrão)
+
+volumes:
+  emailvol:  # Definindo o volume persistente 'emailvol'
+  email_data:  # Definindo o volume persistente 'email_data' para armazenar as mensagens
+
+
  
 
 
