@@ -1,16 +1,42 @@
-
+# Usar a imagem base do Ubuntu
 FROM ubuntu:latest
 
-# Atualizar repositórios e instalar BIND9 e DNS utils
-RUN apt update -y && apt install bind9 dnsutils -y
+# Atualizar repositório e instalar pacotes necessários
+RUN apt-get update && apt-get install -y \
+    bind9 \
+    dnsutils \
+    openssh-server \
+    sudo \
+    curl
 
-# Copiar arquivos de configuração
+# Criar um diretório necessário para o SSH
+RUN mkdir /var/run/sshd
+
+# Criar um usuário (substitua "usuario" por um nome de sua escolha)
+RUN useradd -m -s /bin/bash usuario
+
+# Definir uma senha para o usuário (substitua "senha123" por uma senha segura)
+RUN echo 'usuario:senha123' | chpasswd
+
+# Adicionar o usuário ao grupo sudo (para que ele tenha permissões elevadas, se necessário)
+RUN usermod -aG sudo usuario
+
+# Configurar o SSH: permitir autenticação por senha e desabilitar o login do root
+RUN sed -i 's/PermitRootLogin yes/PermitRootLogin no/' /etc/ssh/sshd_config
+RUN sed -i 's/PasswordAuthentication no/PasswordAuthentication yes/' /etc/ssh/sshd_config
+
+# Garantir que a chave SSH do usuário seja criada
+RUN mkdir -p /home/usuario/.ssh && chown -R usuario:usuario /home/usuario/.ssh
+
+# Copiar arquivos de configuração do BIND
 COPY named.conf.local /etc/bind/named.conf.local
-COPY db.asa.br /etc/bind/db.asa.br
+COPY db.com.br /etc/bind/db.com.br
 
-# Expor as portas do DNS
+# Expor as portas necessárias
 EXPOSE 53/tcp
 EXPOSE 53/udp
+EXPOSE 22  
 
-# Comando para iniciar o BIND em primeiro plano
-CMD ["/usr/sbin/named", "-g", "-c", "/etc/bind/named.conf", "-u", "bind"]
+# Iniciar o BIND e o SSH
+CMD service ssh start && /usr/sbin/named -g -c /etc/bind/named.conf -u bind && tail -f /dev/null
+
