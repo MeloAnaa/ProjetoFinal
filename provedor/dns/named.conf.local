@@ -1,6 +1,17 @@
-
-zone "asa.br" {
+zone "pontanegra.br" {
     type master;
-    file "/etc/bind/db.asa.br";
-    allow-transfer { 127.0.0.1; };
+    file "/etc/bind/db.pontanegra.br";  # Arquivo de zona para pontanegra.br
+    allow-transfer { 127.0.0.1; };      # Permite transferências apenas para localhost
+};
+
+zone "pipa.com.br" {
+    type master;
+    file "/etc/bind/db.pipa.com.br";    # Arquivo de zona para pipa.com.br
+    allow-transfer { 127.0.0.1; };      # Permite transferências apenas para localhost
+};
+
+zone "genipabu.com.br" {
+    type master;
+    file "/etc/bind/db.genipabu.com.br";  # Arquivo de zona para genipabu.com.br
+    allow-transfer { 127.0.0.1; };        # Permite transferências apenas para localhost
 };
