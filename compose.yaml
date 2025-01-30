@@ -12,9 +12,8 @@ services:
       - "2222:22"    # Mapeia a porta 2222 do host para a porta 22 do contêiner (SSH)
     environment:
       - PASSWORD_AUTH=yes  # Variável para controle de autenticação por senha (se necessário)
-    volumes:
-      - ./ssh_config:/etc/ssh/sshd_config  # Se você tiver uma configuração personalizada para o SSH
     command: /usr/sbin/sshd -D  # Comando para iniciar o SSH no contêiner
+
 
   proxy:
     build:
