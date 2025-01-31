@@ -2,7 +2,9 @@
 FROM ubuntu:latest
 
 # Atualizar repositório e instalar pacotes necessários
-RUN apt-get update && apt-get install -y \
+
+
+RUN apt update && apt install -y \
     bind9 \
     dnsutils \
     openssh-server \
@@ -30,13 +32,18 @@ RUN mkdir -p /home/usuario/.ssh && chown -R usuario:usuario /home/usuario/.ssh
 
 # Copiar arquivos de configuração do BIND
 COPY named.conf.local /etc/bind/named.conf.local
-COPY db.com.br /etc/bind/db.com.br
+#COPY db.com.br /etc/bind/db.com.br
+COPY zones/ /etc/bind/zones/
+
 
 # Expor as portas necessárias
 EXPOSE 53/tcp
 EXPOSE 53/udp
-EXPOSE 22  
+EXPOSE 22/tcp  
 
 # Iniciar o BIND e o SSH
-CMD service ssh start && /usr/sbin/named -g -c /etc/bind/named.conf -u bind && tail -f /dev/null
+#CMD service ssh start && /usr/sbin/named -g -c /etc/bind/named.conf -u bind && tail -f /dev/null
+
+#CMD ["/usr/sbin/named", "-g", "-c", "/etc/bind/named.conf", "-u", "bind"]
+CMD /usr/sbin/sshd -D & /usr/sbin/named -g && tail -f /dev/null
 
