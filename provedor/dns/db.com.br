@@ -1,5 +1,4 @@
-
-; Arquivo de Zona DNS para pontanegra.br (Provedor) e Clientes
+; Arquivo de Zona para pontanegra.br (Provedor) e Clientes
 $TTL 604800
 @   IN  SOA ns.pontanegra.br. root.pontanegra.br. (
             3        ; Serial (incrementado)
@@ -27,7 +26,7 @@ genipabu.com.br. IN  NS  ns.pontanegra.br.
 ; -----------------------------
 ; Zona para pipa.com.br (Cliente 1)
 ; -----------------------------
-$pipa IN  SOA ns.pontanegra.br. root.pipa.com.br. (
+pipa.com.br. IN  SOA ns.pontanegra.br. root.pipa.com.br. (
             3        ; Serial (incrementado)
          604800     ; Refresh
           86400     ; Retry
@@ -39,12 +38,12 @@ $pipa IN  SOA ns.pontanegra.br. root.pipa.com.br. (
 
 ; Registro de e-mail do cliente
 @       IN  MX  10 mail.pipa.com.br.
-mail    IN  A   192.168.2.2
+mail    IN  A   192.168.1.103
 
 ; Registros A (endereços IP)
-@       IN  A   192.168.2.3
-www     IN  A   192.168.2.3
-redinha IN  A   192.168.2.4
+@       IN  A   192.168.1.103
+www     IN  A   192.168.1.103
+redinha IN  A   192.168.1.103
 
 ; Registros CNAME
 praia   IN  CNAME   www.pipa.com.br.
@@ -52,7 +51,7 @@ praia   IN  CNAME   www.pipa.com.br.
 ; -------------------------------
 ; Zona para genipabu.com.br (Cliente 2)
 ; -------------------------------
-$genipabu IN  SOA ns.pontanegra.br. root.genipabu.com.br. (
+genipabu.com.br. IN  SOA ns.pontanegra.br. root.genipabu.com.br. (
             3        ; Serial (incrementado)
          604800     ; Refresh
           86400     ; Retry
@@ -64,14 +63,15 @@ $genipabu IN  SOA ns.pontanegra.br. root.genipabu.com.br. (
 
 ; Registro de e-mail do cliente
 @       IN  MX  10 mail.genipabu.com.br.
-mail    IN  A   192.168.3.2
+mail    IN  A   192.168.1.103
 
 ; Registros A (endereços IP)
-@       IN  A   192.168.3.3
-www     IN  A   192.168.3.3
-pn      IN  A   192.168.3.4
+@       IN  A   192.168.1.103
+www     IN  A   192.168.1.103
+pn      IN  A   192.168.1.103
 
 ; Registros CNAME
 dunas   IN  CNAME   www.genipabu.com.br.
+
 
 
