@@ -1,0 +1,22 @@
+$TTL 604800
+@   IN  SOA ns.pontanegra.br. root.pipa.com.br. (
+            2023101001 ; Serial (YYYYMMDDXX)
+            604800     ; Refresh
+            86400      ; Retry
+            2419200    ; Expire
+            604800 )   ; Negative Cache TTL
+
+; Servidor de nomes do cliente (pipa.com.br)
+@       IN  NS  ns.pontanegra.br.
+
+; Registro de e-mail do cliente
+@       IN  MX  10 mail.pipa.com.br.
+mail    IN  A   192.168.1.103
+
+; Registros A (endereços IP)
+@       IN  A   192.168.1.103
+www     IN  A   192.168.1.103
+redinha IN  A   192.168.1.103
+
+; Registros CNAME
+praia   IN  CNAME   www.pipa.com.br.
