@@ -1,0 +1,19 @@
+$TTL 604800
+@   IN  SOA ns.pontanegra.br. root.pontanegra.br. (
+            2023101001 ; Serial (YYYYMMDDXX)
+            604800     ; Refresh
+            86400      ; Retry
+            2419200    ; Expire
+            604800 )   ; Negative Cache TTL
+
+; Servidor de nomes do provedor (pontanegra.br)
+@       IN  NS  ns.pontanegra.br.
+ns      IN  A   192.168.1.103
+
+; Registro de e-mail do provedor
+@       IN  MX  10 mail.pontanegra.br.
+mail    IN  A   192.168.1.103
+
+; Sites e serviços do provedor
+www     IN  A   192.168.1.103
+painel  IN  CNAME   www.pontanegra.br.
