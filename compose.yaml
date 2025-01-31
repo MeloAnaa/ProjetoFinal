@@ -27,31 +27,6 @@ services:
     networks:
       - asa-network
 
-  asa-server:
-    build:
-      context:  ./asa-server
-      dockerfile: Dockerfile
-    container_name: asa-server
-    networks:
-      - asa-network
-
-  asa-server2:
-    build:
-      context:  ./asa-server
-      dockerfile: Dockerfile
-    container_name: asa-server2
-    networks:
-      - asa-network
-
-  asa-server02:
-    build:
-      context:  ./asa-server02
-      dockerfile: Dockerfile
-    container_name: asa-server02
-    ports:
-      - "8080:80/tcp"
-    networks:
-      - asa-network
 
   email:
     build:
