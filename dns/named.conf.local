@@ -1,0 +1,14 @@
+zone "pontanegra.br" {
+    type master;
+    file "/etc/bind/zones/pontanegra.br.db";
+};
+
+zone "pipa.com.br" {
+    type master;
+    file "/etc/bind/zones/pipa.com.br.db";
+};
+
+zone "genipabu.com.br" {
+    type master;
+    file "/etc/bind/zones/genipabu.com.br.db";
+};

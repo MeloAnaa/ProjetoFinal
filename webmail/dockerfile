@@ -1,0 +1,98 @@
+FROM ubuntu:latest
+
+# 1. Instalação de pacotes essenciais
+RUN apt-get update && \
+    DEBIAN_FRONTEND=noninteractive apt-get install -yq \
+    postfix \
+    dovecot-core \
+    dovecot-imapd \
+    dovecot-pop3d \
+    syslog-ng \
+    openssl \
+    && apt-get clean \
+    syslog-ng-mod-multiline \
+    && rm -rf /var/lib/apt/lists/*
+
+
+
+# 2. Criação de usuários e grupos
+RUN groupadd -f -r adm && \
+    useradd -r -g adm -u 999 syslog
+
+# 3. Criação dos usuários do sistema
+RUN useradd -m pipa && \
+    useradd -m pontanegra && \
+    useradd -m genipabu && \
+    echo "pipa:redes" | chpasswd && \
+    echo "pontanegra:redes" | chpasswd && \
+    echo "genipabu:redes" | chpasswd
+
+# 4. Configuração SSL
+# 4. Configuração SSL
+# 4. Configuração SSL
+# 4. Configuração SSL
+RUN mkdir -p /etc/dovecot/private && \
+    openssl req -x509 -nodes -days 3650 -newkey rsa:2048 \
+    -subj "/C=BR/ST=Estado/L=Cidade/O=Organizacao/CN=mail.genipabu.com.br" \
+    -keyout /etc/dovecot/private/dovecot.key \
+    -out /etc/dovecot/private/dovecot.pem -batch && \
+    chmod 600 /etc/dovecot/private/*
+
+
+
+
+# Para adicionar SANs (Subject Alternative Names)
+RUN echo "subjectAltName=DNS:genipabu.com.br,DNS:pipa.com.br,DNS:pontanegra.br" >> /etc/ssl/openssl.cnf
+
+
+# 5. Configuração básica de logs
+RUN mkdir -p /var/log/mail && \
+    touch /var/log/mail.log && \
+    chmod 666 /var/log/mail.log
+
+
+
+
+
+
+
+# 5. Cópia dos arquivos de configuração (ADICIONEI ESTA SEÇÃO)
+COPY  main.cf /etc/postfix
+COPY ./dovecot/10-auth.conf /etc/dovecot/conf.d
+COPY ./dovecot/conf.d/10-master.conf /etc/dovecot/conf.d
+COPY ./syslog-ng.conf /etc/syslog-ng/syslog-ng.conf
+COPY master.cf /etc/mail/master.cf
+
+
+# 6. Portas expostas
+EXPOSE 25/tcp 143/tcp 587/tcp 993/tcp
+
+# 7. Comando de inicialização
+CMD ["sh", "-c", "service syslog-ng start ; service postfix start ; service dovecot start; tail -F /var/log/mail.log"]
+
+##comandos testar###
+#telnet "ip" 25             
+#helo mail.asa.br
+#mail from: bob@asa.br
+#rcpt to: patrick@asa.br
+#data
+#oi este é um email
+#quit
+
+#OU telnet "ip" 110
+#comando para pop:
+#user bob
+#list
+
+
+
+
+##VER LOGS DE EMAILS (cada arquivo é a caixa de email de cada usuario)
+#docker exec -it email /bin/bash 
+#cd /var/spool/mail
+#ls -la
+##os emails novos que estao chegando sao colocados no inicio do arquivo
+
+
+
+

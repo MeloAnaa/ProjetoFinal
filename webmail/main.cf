@@ -1,0 +1,40 @@
+# Configuração básica
+myorigin = pontanegra.br
+smtpd_banner = Ponta Negra ESMTP Server
+
+# Opções gerais
+biff = no
+append_dot_mydomain = no
+readme_directory = no
+compatibility_level = 3.6
+
+# ================== CONFIGURAÇÃO TLS ================== 
+smtpd_tls_cert_file = /etc/dovecot/private/dovecot.pem
+smtpd_tls_key_file = /etc/dovecot/private/dovecot.key
+smtpd_tls_security_level = encrypt  
+smtpd_tls_auth_only = yes          
+
+# Configurações TLS para envio (outgoing)
+smtp_tls_CApath = /etc/ssl/certs
+smtp_tls_security_level = may      
+smtp_tls_session_cache_database = btree:${data_directory}/smtp_scache
+
+# ================== RESTRIÇÕES DE RELAY ================== 
+smtpd_relay_restrictions = permit_mynetworks, permit_sasl_authenticated, reject_unauth_destination
+
+# ================== AUTENTICAÇÃO SASL ================== 
+smtpd_sasl_auth_enable = yes
+smtpd_sasl_type = dovecot
+smtpd_sasl_path = private/auth     
+smtpd_sasl_security_options = noanonymous
+broken_sasl_auth_clients = yes     
+
+# ================== DOMÍNIOS E REDES ================== 
+# Domínios locais (Postfix entrega diretamente)
+mydestination = $myhostname, $myorigin, localhost, localhost.localdomain
+
+# Domínios para relay (aceitar emails para repassar)
+relay_domains = pipa.com.br, genipabu.com.br 
+
+
+mynetworks = 127.0.0.0/8, 192.168.1.0/24, 172.17.0.0/16, [::ffff:127.0.0.0]/104, [::1]/128

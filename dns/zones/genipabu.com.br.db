@@ -1,0 +1,22 @@
+$TTL 604800
+@   IN  SOA ns.pontanegra.br. root.genipabu.com.br. (
+            2023101001 ; Serial
+            604800     ; Refresh
+            86400      ; Retry
+            2419200    ; Expire
+            604800 )   ; Negative Cache TTL
+
+; Nameservers
+@       IN  NS  ns.pontanegra.br.
+
+; MX Records
+@       IN  MX  10 mail.genipabu.com.br.
+
+; A Records
+@       IN  A   192.168.1.103
+mail    IN  A   192.168.1.103
+www     IN  A   192.168.1.103
+pn      IN  A   192.168.1.103
+
+; CNAME Records
+dunas   IN  CNAME   www.genipabu.com.br.
