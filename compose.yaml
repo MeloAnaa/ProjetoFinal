@@ -61,8 +61,6 @@ services:
     networks:
       - asa-network
 
-
-
   webmail:
     build:
       context:  ./webmail
@@ -77,14 +75,11 @@ services:
      - "110:110/tcp"      # POP3 (não criptografado)
      - "995:995/tcp"      # POP3S (POP3 sobre SSL)
     volumes:
-    - emailvol:/etc/mail  
-    - email_data:/var/spool/mail  
+    - emailvol:/etc/mail  # Mapeando o volume 'emailvol' para o diretório /etc/mail no container
+    - email_data:/var/spool/mail  # Mapeando o volume 'email_data' para o diretório /var/spool/mail (para persistir mensagens) 
     - dovecot_data:/etc/dovecot/private
     networks:
       - asa-network
-
-
-
 
 
 networks:

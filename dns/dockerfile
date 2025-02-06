@@ -1,7 +1,7 @@
 # Usar a imagem base do Ubuntu
 FROM ubuntu:latest
 
-# Atualizar repositório e instalar pacotes necessários
+
 RUN apt update && apt install -y \
     bind9 \
     dnsutils \
@@ -9,24 +9,35 @@ RUN apt update && apt install -y \
     sudo \
     curl
 
-# Criar um diretório necessário SSH
+
+
+
+
+
 RUN mkdir /var/run/sshd
 
-# Criar o usuário "dns" e definir a senha
+# criar o usuário "dns" e definir a senha
 RUN useradd -m -s /bin/bash dns && \
     echo 'dns:senha123' | chpasswd && \
     usermod -aG sudo dns
 
-# Configurar o SSH: permitir autenticação por senha e desabilitar o login do root
+#permitir autenticação por senha e desabilitar o login do root
 RUN sed -i 's/PermitRootLogin yes/PermitRootLogin no/' /etc/ssh/sshd_config && \
     sed -i 's/PasswordAuthentication no/PasswordAuthentication yes/' /etc/ssh/sshd_config
 
-# Garantir que a chave SSH do usuário seja criada
+
 RUN mkdir -p /home/dns/.ssh && \
     chown -R dns:dns /home/dns/.ssh && \
     chmod 700 /home/dns/.ssh
 
-# Copiar arquivos de configuração do BIND
+
+
+
+
+
+
+
+
 COPY named.conf.local /etc/bind/named.conf.local
 COPY zones/ /etc/bind/zones/
 
@@ -35,5 +46,5 @@ EXPOSE 53/tcp
 EXPOSE 53/udp
 EXPOSE 22/tcp
 
-# Iniciar o BIND e o SSH
+
 CMD /usr/sbin/sshd -D & /usr/sbin/named -g && tail -f /dev/null

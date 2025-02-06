@@ -1,6 +1,6 @@
 FROM ubuntu:latest
 
-# 1. Instalação de pacotes essenciais
+
 RUN apt-get update && \
     DEBIAN_FRONTEND=noninteractive apt-get install -yq \
     postfix \
@@ -15,11 +15,11 @@ RUN apt-get update && \
 
 
 
-# 2. Criação de usuários e grupos
+
 RUN groupadd -f -r adm && \
     useradd -r -g adm -u 999 syslog
 
-# 3. Criação dos usuários do sistema
+
 RUN useradd -m pipa && \
     useradd -m pontanegra && \
     useradd -m genipabu && \
@@ -41,11 +41,11 @@ RUN mkdir -p /etc/dovecot/private && \
 
 
 
-# Para adicionar SANs (Subject Alternative Names)
+
 RUN echo "subjectAltName=DNS:genipabu.com.br,DNS:pipa.com.br,DNS:pontanegra.br" >> /etc/ssl/openssl.cnf
 
 
-# 5. Configuração básica de logs
+
 RUN mkdir -p /var/log/mail && \
     touch /var/log/mail.log && \
     chmod 666 /var/log/mail.log
@@ -56,7 +56,7 @@ RUN mkdir -p /var/log/mail && \
 
 
 
-# 5. Cópia dos arquivos de configuração (ADICIONEI ESTA SEÇÃO)
+
 COPY  main.cf /etc/postfix
 COPY ./dovecot/10-auth.conf /etc/dovecot/conf.d
 COPY ./dovecot/conf.d/10-master.conf /etc/dovecot/conf.d
@@ -64,10 +64,10 @@ COPY ./syslog-ng.conf /etc/syslog-ng/syslog-ng.conf
 COPY master.cf /etc/mail/master.cf
 
 
-# 6. Portas expostas
+
 EXPOSE 25/tcp 143/tcp 587/tcp 993/tcp
 
-# 7. Comando de inicialização
+
 CMD ["sh", "-c", "service syslog-ng start ; service postfix start ; service dovecot start; tail -F /var/log/mail.log"]
 
 ##comandos testar###
