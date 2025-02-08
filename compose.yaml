@@ -21,8 +21,9 @@ services:
       dockerfile: Dockerfile
     container_name: nginx-proxy
     ports:
-      - "80:80/tcp"
+      #- "80:80/tcp"
       - "443:443/tcp"
+      - "2223:22"
     depends_on:
       - wordpress
       - webmail
@@ -31,6 +32,7 @@ services:
     volumes:
       - ./proxy/nginx.conf:/etc/nginx/nginx.conf:ro
       - ./proxy/ssl:/etc/nginx/ssl:ro
+     
 
   wordpress:
     image: wordpress:latest
@@ -48,6 +50,31 @@ services:
     networks:
       - asa-network
 
+
+  roundcube:
+    image: roundcube/roundcubemail:latest
+    container_name: roundcube
+    ports:
+      - "8080:80"
+    restart: always
+    depends_on:
+      - webmail
+      - db
+    environment:
+      ROUNDCUBE_DB_TYPE: mysql
+      ROUNDCUBE_DB_HOST: db
+      ROUNDCUBE_DB_USER: roundcube
+      ROUNDCUBE_DB_PASSWORD: roundcube
+      ROUNDCUBE_DB_NAME: roundcube
+      ROUNDCUBE_DEFAULT_HOST: tls://webmail
+      ROUNDCUBE_SMTP_SERVER: tls://webmail
+    volumes:
+      - roundcube_data:/var/www/html
+    networks:
+      - asa-network
+
+  
+
   db:
     image: mysql:5.7
     container_name: mysql_db
@@ -58,8 +85,10 @@ services:
       MYSQL_PASSWORD: wordpress
     volumes:
       - mysql_data:/var/lib/mysql
+      - ./db/init.sql:/docker-entrypoint-initdb.d/init.sql
     networks:
       - asa-network
+
 
   webmail:
     build:
@@ -74,10 +103,13 @@ services:
      - "993:993/tcp"      # IMAPS (IMAP sobre SSL)
      - "110:110/tcp"      # POP3 (não criptografado)
      - "995:995/tcp"      # POP3S (POP3 sobre SSL)
+     - "22:22/tcp"
     volumes:
     - emailvol:/etc/mail  # Mapeando o volume 'emailvol' para o diretório /etc/mail no container
     - email_data:/var/spool/mail  # Mapeando o volume 'email_data' para o diretório /var/spool/mail (para persistir mensagens) 
     - dovecot_data:/etc/dovecot/private
+    
+    
     networks:
       - asa-network
 
@@ -92,7 +124,10 @@ volumes:
   maildata:
   mailstate:
   mailconfig:
-  emailvol:  # Definindo o volume persistente 'emailvol'
-  email_data:  # Definindo o volume persistente 'email_data' para armazenar as mensagens
+  emailvol: 
+  email_data:  
   dovecot_data:
+  roundcube_data:
+
+ 
  
