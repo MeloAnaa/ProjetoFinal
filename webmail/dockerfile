@@ -92,6 +92,7 @@ COPY ./dovecot/conf.d/10-master.conf /etc/dovecot/conf.d
 COPY ./syslog-ng.conf /etc/syslog-ng/syslog-ng.conf
 COPY master.cf /etc/mail/master.cf
 
+
 # Configura permissões do Apache e do Roundcube
 RUN chmod -R 775 /var/www/html/roundcube/temp /var/www/html/roundcube/logs && \
     chown -R www-data:www-data /var/www/html/roundcube/temp /var/www/html/roundcube/logs

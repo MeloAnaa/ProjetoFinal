@@ -18,5 +18,8 @@ mail    IN  A   192.168.1.103
 www     IN  A   192.168.1.103
 redinha IN  A   192.168.1.103
 
+web1.pipa.com.br.  IN  A  192.168.1.103
+web2.pipa.com.br.  IN  A  192.168.1.103
+
 ; CNAME Records
-praia   IN  CNAME   www.pipa.com.br.
+pipa   IN  CNAME   www.pipa.com.br.
