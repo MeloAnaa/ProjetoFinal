@@ -31,16 +31,17 @@ $CONFIG = array(
     5 => 'webmail',
     6 => 'nextcloud',  # Nome do container
     7 => '10.0.2.14',
+    8 => "nextcloud.pontanegra.br"
   ),
   
   'datadirectory' => '/var/www/html/data',
   'dbtype' => 'mysql',
   'version' => '29.0.6.1',
-  'overwrite.cli.url' => 'https://mail.pipa.com.br',
+  'overwrite.cli.url' => 'https://mail.pontanegra.br',
   
-  # Configuração do Banco de Dados
+  // Configuração do Banco de Dados
   'dbname' => 'nextcloud',
-  'dbhost' => 'nextcloud_db',  # Nome do serviço no docker-compose
+  'dbhost' => 'nextcloud_db',
   'dbport' => '',
   'dbtableprefix' => 'oc_',
   'mysql.utf8mb4' => true,
@@ -49,27 +50,39 @@ $CONFIG = array(
   
   'installed' => true,
   
-  # Configurações de E-mail
-  'app.mail.verify-tls-peer' => false,
-  'mail_smtpdebug' => true,
-  'loglevel' => 2,
-  'debug' => true,  # Corrigido typo "debud"
+  // Autenticação IMAP
+  'auth' => [
+    'classes' => [
+        'OCA\UserExternal\IMAP',
+    ],
+  ],
+  'user_backends' => [
+    [
+        'class' => 'OCA\UserExternal\IMAP',
+        'arguments' => [
+            'webmail',  // Nome do serviço no Docker
+            143,        // Porta IMAP
+            'STARTTLS'  // Criptografia
+        ],
+    ]
+  ],
   
+  // Configurações de E-mail
   'mail_smtpmode' => 'smtp',
-  'mail_sendmailmode' => 'smtp',
+  'mail_smtpauthtype' => 'LOGIN',
+  'mail_smtpauth' => true,
+  'mail_smtphost' => 'webmail',  // Nome do serviço no Docker
+  'mail_smtpport' => 587,
+  'mail_smtpname' => 'nextcloud@pontanegra.br',
+  'mail_smtppassword' => 'SenhaSegura123',
   'mail_from_address' => 'noreply',
-  'mail_domain' => 'pipa.com.br',  # Domínio principal
+  'mail_domain' => 'pontanegra.br',
   
-  # Conexão com o webmail
-  'mail_smtphost' => 'webmail',  # Nome do serviço no docker-compose
-  'mail_smtpport' => '587',       # Porta segura com STARTTLS
-  'mail_smtpstreamoptions' => array(
-    'ssl' => array(
-      'allow_self_signed' => true,
-      'verify_peer' => false,
-      'verify_peer_name' => false
-    )
-  ),
+  // Segurança
+  'allow_local_remote_servers' => true,
+  'overwriteprotocol' => 'https',
   
-  'defaultapp' => 'mail'  # App padrão para abrir
+  // Logs
+  'loglevel' => 2,
+  'debug' => true
 );

@@ -18,5 +18,8 @@ mail    IN  A   192.168.1.103
 www     IN  A   192.168.1.103
 pn      IN  A   192.168.1.103
 
+web1.genipabu.com.br.  IN  A  192.168.1.103
+web2.genipabu.com.br.  IN  A  192.168.1.103
+
 ; CNAME Records
 dunas   IN  CNAME   www.genipabu.com.br.

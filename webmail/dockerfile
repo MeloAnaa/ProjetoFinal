@@ -34,13 +34,7 @@ RUN useradd -m pipa && \
     echo "pontanegra:redes" | chpasswd && \
     echo "genipabu:redes" | chpasswd
 
-# Configuração SSL para Dovecot
-RUN mkdir -p /etc/dovecot/private && \
-    openssl req -x509 -nodes -days 3650 -newkey rsa:2048 \
-    -subj "/C=BR/ST=Estado/L=Cidade/O=Organizacao/CN=mail.genipabu.com.br" \
-    -keyout /etc/dovecot/private/dovecot.key \
-    -out /etc/dovecot/private/dovecot.pem -batch && \
-    chmod 600 /etc/dovecot/private/*
+
 
 RUN echo "subjectAltName=DNS:genipabu.com.br,DNS:pipa.com.br,DNS:pontanegra.br" >> /etc/ssl/openssl.cnf
 
@@ -48,14 +42,7 @@ RUN mkdir -p /var/log/mail && \
     touch /var/log/mail.log && \
     chmod 666 /var/log/mail.log
 
-# Instalação do Roundcube
-WORKDIR /var/www/html
-RUN wget https://github.com/roundcube/roundcubemail/releases/download/1.6.6/roundcubemail-1.6.6-complete.tar.gz && \
-    tar -xvzf roundcubemail-1.6.6-complete.tar.gz && \
-    mv roundcubemail-1.6.6 roundcube && \
-    rm roundcubemail-1.6.6-complete.tar.gz && \
-    chown -R www-data:www-data /var/www/html/roundcube && \
-    chmod -R 755 /var/www/html/roundcube
+
 
 
 
@@ -67,7 +54,7 @@ RUN useradd -m -s /bin/bash webmail && \
     echo 'webmail:senha123' | chpasswd && \
     usermod -aG sudo webmail
     
-    #permitir autenticação por senha e desabilitar o login do root
+  
 RUN sed -i 's/PermitRootLogin yes/PermitRootLogin no/' /etc/ssh/sshd_config && \
     sed -i 's/PasswordAuthentication no/PasswordAuthentication yes/' /etc/ssh/sshd_config
     
@@ -81,21 +68,14 @@ RUN mkdir -p /home/webmail/.ssh && \
 
 
 
-# Copia os arquivos de configuração do Roundcube
-COPY config.inc.php /var/www/html/roundcube/config/config.inc.php
-COPY defaults.inc.php /var/www/html/roundcube/config/defaults.inc.php
 
 # Copia os arquivos de configuração do Postfix, Dovecot e Syslog-NG
 COPY main.cf /etc/postfix
-COPY ./dovecot/10-auth.conf /etc/dovecot/conf.d
-COPY ./dovecot/conf.d/10-master.conf /etc/dovecot/conf.d
-COPY ./syslog-ng.conf /etc/syslog-ng/syslog-ng.conf
+
+
 COPY master.cf /etc/mail/master.cf
 
 
-# Configura permissões do Apache e do Roundcube
-RUN chmod -R 775 /var/www/html/roundcube/temp /var/www/html/roundcube/logs && \
-    chown -R www-data:www-data /var/www/html/roundcube/temp /var/www/html/roundcube/logs
 
 # Exposição de portas
 EXPOSE 25/tcp 143/tcp 587/tcp 993/tcp 80/tcp 22/tcp
@@ -105,6 +85,32 @@ EXPOSE 25/tcp 143/tcp 587/tcp 993/tcp 80/tcp 22/tcp
 
 #CMD ["sh", "-c", "service syslog-ng start; service postfix start; service dovecot start; service apache2 start; tail -F /var/log/mail.log; service ssh start; nginx -g 'daemon off'"]
 CMD ["sh", "-c", "service syslog-ng start; service postfix start; service dovecot start; service apache2 start; service ssh start; tail -F /var/log/mail.log; nginx -g 'daemon off'"]
+
+
+##comandos testar###
+#telnet "ip" 25             
+#helo mail.asa.br
+#mail from: bob@asa.br
+#rcpt to: patrick@asa.br
+#data
+#oi este é um email
+#quit
+
+#OU telnet "ip" 110
+#comando para pop:
+#user bob
+#list
+
+
+
+
+##VER LOGS DE EMAILS (cada arquivo é a caixa de email de cada usuario)
+#docker exec -it email /bin/bash 
+#cd /var/spool/mail
+#ls -la
+##os emails novos que estao chegando sao colocados no inicio do arquivo
+
+
 
 
 ##comandos testar###

@@ -1,0 +1,7 @@
+# Domínios aceitos
+pipa.com.br        OK
+pontanegra.br      OK
+genipabu.com.br    OK
+
+# Redirecionamentos (opcional)
+@pontanegra.br    user1@pontanegra.br

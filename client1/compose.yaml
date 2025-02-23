@@ -1,0 +1,51 @@
+version: '3.8'
+
+services:
+  # Serviços Web
+  web1:
+    build:
+      context: ./web1
+    container_name: web1-client
+    ports:
+     - "8083:80"
+    networks:
+      - client-internal
+    volumes:
+      - web1_data:/usr/share/nginx/html
+
+  web2:
+    build:
+      context: ./web2
+    container_name: web2-client
+    ports:
+     - "8084:80"
+    networks:
+      - client-internal
+    volumes:
+      - web2_data:/usr/share/nginx/html
+
+  # Nginx do Cliente
+  client-proxy:
+    image: nginx:alpine
+    container_name: client-proxy
+    ports:
+      - "8001:80"  # Porta exposta para comunicação interna
+    volumes:
+      - ./client-nginx/conf.d:/etc/nginx/conf.d
+      - ./client-nginx/ssl:/etc/nginx/ssl
+    networks:
+      - client-internal
+      - shared-network
+    depends_on:
+      - web1
+      - web2
+
+networks:
+  client-internal:
+    driver: bridge
+  shared-network:
+    external: true  # Rede compartilhada com o provedor
+
+volumes:
+  web1_data:
+  web2_data:
